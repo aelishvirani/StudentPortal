@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { studentLogout, newerChats, previousChats} from '../redux/action/studentAction'
+import { studentLogout, newerChats, previousChats } from '../redux/action/studentAction'
 
 
 const Home = () => {
@@ -39,6 +39,9 @@ const Home = () => {
                                 <li className="nav-item">
                                     <button type="button" className="btn"><Link to="/student/updateProfile"><li>UPDATE PROFILE</li></Link></button>
                                 </li>
+                                <li className="nav-item">
+                                    <button type="button" className="btn"><Link to="/student/announcement"><li>ANNOUNCEMENTS</li></Link></button>
+                                </li>
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         ACADEMIC </a>
@@ -60,12 +63,12 @@ const Home = () => {
                                 <li className="nav-item">
                                     <button type="button" className="btn"><Link to=""><li>TIME TABLE</li></Link></button>
                                 </li>
-                               
+
                             </ul>
-                           
+
                         </div>
                         <div>
-                            <button style={{listStyle:"none"}} onClick={logoutHandler} type="button" className="btn"><li>LOGOUT</li></button>
+                            <button style={{ listStyle: "none" }} onClick={logoutHandler} type="button" className="btn"><li>LOGOUT</li></button>
                         </div>
                     </nav>
                 </div>

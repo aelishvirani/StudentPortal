@@ -122,7 +122,7 @@ export const fetchStudents = (department, year, section) => {
             const { data } = await axios({
                 method: 'Post',
                 url: url + "/api/faculty/fetchStudents",
-                data: { department, year, section}
+                data: { department, year, section }
             })
             dispatch(fetchStudentsHelper(data.result))
             dispatch(subjectCodeListHelper(data.subjectCode))
@@ -160,14 +160,14 @@ export const facultyUpdate = (updatedData) => {
 }
 
 export const markAttendence = (selectedStudents, subjectCode, department, year,
-           section) => {
-    return async(dispatch) => {
+    section) => {
+    return async (dispatch) => {
         try {
-                await axios({
+            await axios({
                 method: 'Post',
-                    url: url + "/api/faculty/markAttendence",
-                data: { selectedStudents, subjectCode, department, year, section}
-                })
+                url: url + "/api/faculty/markAttendence",
+                data: { selectedStudents, subjectCode, department, year, section }
+            })
             alert("attendence has been marked successfully")
             dispatch({
                 type: "HELPER",
@@ -175,13 +175,13 @@ export const markAttendence = (selectedStudents, subjectCode, department, year,
             })
         }
         catch (err) {
-           console.log("Error in marking attendence, faculty action", err.message)
+            console.log("Error in marking attendence, faculty action", err.message)
         }
     }
 }
 
 export const uploadMarks = (subjectCode, exam, totalMarks, marks,
-    department, year, section, ) => {
+    department, year, section,) => {
     return async (dispatch) => {
         try {
             await axios({
@@ -189,14 +189,14 @@ export const uploadMarks = (subjectCode, exam, totalMarks, marks,
                 url: url + "/api/faculty/uploadMarks",
                 data: {
                     subjectCode, exam, totalMarks, marks, department, year, section,
-                    }
+                }
             })
             alert("Mark uploaded successfully")
             dispatch({
                 type: "HELPER",
                 payload: true
             })
-           
+
         }
         catch (err) {
             dispatch({
@@ -223,3 +223,24 @@ export const facultyLogout = () =>
         // Set current user to {} which will set isAuthenticated to false
         dispatch(setFaculty({}));
     };
+
+
+export const facultyAddAnnouncement = (announcementData, history) => async (dispatch) => {
+    try {
+        const res = await axios.post('/api/faculty/add-announcement', announcementData, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`, // Include the JWT token for authentication
+            },
+        });
+        dispatch({
+            type: 'ADD_ANNOUNCEMENT_SUCCESS',
+            payload: res.data, // Store the response data
+        });
+        history.push('/faculty-home'); // Redirect to the faculty home page
+    } catch (error) {
+        dispatch({
+            type: 'ADD_ANNOUNCEMENT_FAILURE',
+            payload: error.response.data.message, // Store error message if any
+        });
+    }
+};

@@ -1,5 +1,5 @@
 import React from 'react';
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './redux/utils/setAuthToken'
@@ -31,14 +31,17 @@ import ForgotPassword from './Pages/ForgotPassword'
 import Chat from './Pages/Chat'
 import RecieverUserDetails from './Pages/RecieverUserDetails'
 import StudentUpdateProfile from './Pages/StudentUpdateProfile'
- 
+
 import StudentSubjectList from './Pages/Student/StudentSubjectList'
 
 import FacultyUploadMarks from './Pages/Faculty/FacultyUploadMarks'
 
 import FacultyUpdateProfile from './Pages/Faculty/FacultyUpdateProfile'
 
+import FacultyAddAnnouncement from './Pages/Faculty/FacultyAddAnnouncement'
+
 import StudentTestPerformace from './Pages/Student/StudentTestPerformance'
+import StudentAnnouncement from './Pages/Student/StudentAnnouncement'
 
 import AdminAddAdmin from './Pages/Admin/AdminAddAdmin'
 
@@ -49,11 +52,11 @@ import AdminGetAllStudent from './Pages/Admin/AdminGetAllStudents'
 import AdminGetAllSubject from './Pages/Admin/AdminGetAllSubjects'
 
 import AdminHome from './Pages/Admin/AdminHome'
- 
+
 if (window.localStorage.facultyJwtToken) {
   setAuthToken(localStorage.facultyJwtToken);
   const decoded = jwt_decode(localStorage.facultyJwtToken);
- 
+
   store.dispatch(setFacultyUser(decoded));
 
   // Check for expired token
@@ -74,7 +77,7 @@ else if (window.localStorage.studentJwtToken) {
   if (decoded.exp < currentTime) {
     store.dispatch(studentLogout());
     window.location.href = '/';
-  } 
+  }
 }
 else if (window.localStorage.adminJwtToken) {
   setAuthToken(localStorage.adminJwtToken);
@@ -87,11 +90,11 @@ else if (window.localStorage.adminJwtToken) {
   if (decoded.exp < currentTime) {
     store.dispatch(adminLogout());
     window.location.href = '/';
-  } 
+  }
 }
 
 function App() {
-  const store = useSelector((store)=>store)
+  const store = useSelector((store) => store)
   return (
     <div>
       <Router>
@@ -113,7 +116,9 @@ function App() {
           <Route exact path="/admin/allSubject" component={AdminGetAllSubject} />
           <Route exact path="/student/attendence" component={StudentAttendencePage} />
           <Route exact path="/student/updatePassword" component={StudentUpdatePassword} />
+          <Route exact path="/student/announcement" component={StudentAnnouncement} />
           <Route exact path="/student/testPerformance" component={StudentTestPerformace} />
+          <Route exact path="/faculty/addAnnouncement" component={FacultyAddAnnouncement} />
           <Route exact path="/faculty/updatePassword" component={FacultyUpdatePassword} />
           <Route exact path="/faculty/uploadMarks" component={FacultyUploadMarks} />
           <Route exact path="/faculty/updateProfile" component={FacultyUpdateProfile} />

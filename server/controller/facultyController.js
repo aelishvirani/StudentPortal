@@ -6,6 +6,7 @@ const Subject = require('../models/subject')
 const Faculty = require('../models/faculty')
 const Attendence = require('../models/attendence')
 const Mark = require('../models/marks')
+const Announcement = require('../models/announcement');
 
 const keys = require('../config/key')
 
@@ -26,7 +27,7 @@ module.exports = {
             const { errors, isValid } = validateFacultyLoginInput(req.body);
             // Check Validation
             if (!isValid) {
-              return res.status(400).json(errors);
+                return res.status(400).json(errors);
             }
             const { registrationNumber, password } = req.body;
 
@@ -100,17 +101,17 @@ module.exports = {
             const { selectedStudents, subjectCode, department,
                 year,
                 section } = req.body
-            
+
             const sub = await Subject.findOne({ subjectCode })
 
             //All Students
             const allStudents = await Student.find({ department, year, section })
-            
+
             var filteredArr = allStudents.filter(function (item) {
                 return selectedStudents.indexOf(item.id) === -1
             });
 
-            
+
             //Attendence mark karne wale log nahi
             for (let i = 0; i < filteredArr.length; i++) {
                 const pre = await Attendence.findOne({ student: filteredArr[i]._id, subject: sub._id })
@@ -162,7 +163,7 @@ module.exports = {
             const { subjectCode, exam, totalMarks, marks, department, year,
                 section } = req.body
             const subject = await Subject.findOne({ subjectCode })
-            const isAlready = await Mark.find({ exam, department, section, subjectCode:subject._id })
+            const isAlready = await Mark.find({ exam, department, section, subjectCode: subject._id })
             if (isAlready.length !== 0) {
                 errors.exam = "You have already uploaded marks of given exam"
                 return res.status(400).json(errors);
@@ -174,18 +175,18 @@ module.exports = {
                     exam,
                     department,
                     section,
-                   
+
                     marks: marks[i].value,
                     totalMarks
                 })
                 await newMarks.save()
             }
-            res.status(200).json({message:"Marks uploaded successfully"})
+            res.status(200).json({ message: "Marks uploaded successfully" })
         }
         catch (err) {
-            console.log("Error in uploading marks",err.message)
+            console.log("Error in uploading marks", err.message)
         }
-        
+
     },
     getAllSubjects: async (req, res, next) => {
         try {
@@ -211,7 +212,7 @@ module.exports = {
                 return res.status(404).json(errors);
             }
             const faculty = await Faculty.findOne({ registrationNumber })
-            const isCorrect = oldPassword== faculty.password;
+            const isCorrect = oldPassword == faculty.password;
             if (!isCorrect) {
                 errors.oldPassword = 'Invalid old Password';
                 return res.status(404).json(errors);
@@ -317,5 +318,58 @@ module.exports = {
         catch (err) {
             console.log("Error in updating Profile", err.message)
         }
-    }
-}
+    },
+
+    // Add Announcement (Faculty)
+    addAnnouncement: async (req, res, next) => {
+        try {
+            const { title, content, department } = req.body;
+
+            // Check if all fields are provided
+            if (!title || !content || !department) {
+                return res.status(400).json({ message: "All fields are required" });
+            }
+
+            // Create a new announcement
+            const newAnnouncement = new Announcement({
+                title,
+                content,
+                facultyId: req.faculty.id, // Assuming faculty is already added to req by middleware
+                department,
+            });
+
+            // Save the announcement
+            await newAnnouncement.save();
+
+            return res.status(201).json({
+                message: "Announcement added successfully",
+                announcement: newAnnouncement
+            });
+        } catch (error) {
+            console.log("Error in adding announcement:", error.message);
+            return res.status(500).json({ message: "Server error" });
+        }
+    },
+
+    // Fetch Announcements (For Students)
+    getAnnouncements: async (req, res, next) => {
+        try {
+            const department = req.query.department;  // Optional filter for department
+            const filter = department ? { department } : {};  // Filter by department if provided
+
+            // Fetch the announcements
+            const announcements = await Announcement.find(filter)
+                .populate('facultyId', 'name email') // Populate faculty details
+                .sort({ createdAt: -1 }); // Sort by the latest announcements first
+
+            if (announcements.length === 0) {
+                return res.status(404).json({ message: "No announcements found" });
+            }
+
+            res.status(200).json({ announcements });
+        } catch (error) {
+            console.log("Error in fetching announcements:", error.message);
+            return res.status(500).json({ message: "Server error" });
+        }
+    },
+};

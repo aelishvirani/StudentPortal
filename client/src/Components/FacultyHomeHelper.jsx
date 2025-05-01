@@ -1,12 +1,12 @@
-import React, {useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { useDispatch, useSelector} from 'react-redux'
-import {facultyLogout} from '../redux/action/facultyAction'
+import { useDispatch, useSelector } from 'react-redux'
+import { facultyLogout } from '../redux/action/facultyAction'
 
 
 
 const Home = () => {
-    const store = useSelector((store)=>store)
+    const store = useSelector((store) => store)
     const history = useHistory()
     const dispatch = useDispatch()
     const [name, setName] = useState("")
@@ -39,6 +39,9 @@ const Home = () => {
                                     <button type="button" className="btn"><Link to="/faculty/updateProfile"><li>UPDATE PROFILE</li></Link></button>
                                 </li>
                                 <li className="nav-item">
+                                    <button type="button" className="btn"><Link to="/faculty/addAnnouncement"><li>ANNOUNCEMENTS</li></Link></button>
+                                </li>
+                                <li className="nav-item">
                                     <button type="button" className="btn"><Link to="/attendenceFaculty"><li>MARK ATTENDANCE</li></Link></button>
                                 </li>
                                 <li className="nav-item">
@@ -53,7 +56,7 @@ const Home = () => {
                             </ul>
                         </div>
                         <div>
-                            <button style={{listStyle:"None"}} onClick={logoutHandler} type="button" className="btn"><li>LOGOUT</li></button>
+                            <button style={{ listStyle: "None" }} onClick={logoutHandler} type="button" className="btn"><li>LOGOUT</li></button>
                         </div>
                     </nav>
                 </div>

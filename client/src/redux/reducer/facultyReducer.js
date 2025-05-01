@@ -10,7 +10,9 @@ const initialState = {
     updateProfileFlag: false,
     allSubjectCodeList: [],
     fetchedStudents: [],
-    fetchedStudentsHelper: true
+    fetchedStudentsHelper: true,
+    addAnnouncementFlag: false,
+    error: null
 }
 
 
@@ -48,6 +50,19 @@ const facultyReducer = (state = initialState, action) => {
                 fetchedStudentsHelper: action.payload
             }
         }
+
+        case 'ADD_ANNOUNCEMENT_SUCCESS':
+            return {
+                ...state,
+                addAnnouncementFlag: true,
+                error: null,
+            };
+        case 'ADD_ANNOUNCEMENT_FAILURE':
+            return {
+                ...state,
+                addAnnouncementFlag: false,
+                error: action.payload,
+            };
         default:
             return state
     }
